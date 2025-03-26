@@ -51,7 +51,7 @@ class MoveControl:
             command = 'CJXZx'
             query_command = 'CJXBX'
         elif axis == 'Y':
-            command = 'CJXZY'
+            command = 'CJXZy'
             query_command = 'CJXBY'
         elif axis == 'Z':
             command = 'CJXZz'
@@ -139,6 +139,7 @@ class MoveControl:
         self.ser.write(command.encode())
         print(f"发送绝对运动指令: {command}")
         time.sleep(0.1)
+
         while True:
             self.ser.write(query_command.encode())
             data = self.ser.read(4)
@@ -146,8 +147,8 @@ class MoveControl:
                 position = self.f_hexToSignedInt(data.hex())
                 if position == target_position * 1000:
                     print(f"{axis}轴运动到绝对目标位置 {target_position}")
-                break
-        time.sleep(0.1)
+                    break
+            time.sleep(0.1)
 
 
     def incremental_movement(self, axis, target_position, speed, wait):
@@ -157,6 +158,10 @@ class MoveControl:
         :param target_position: 目标位置（相对当前的位置偏移量）
         :param speed: 运动速度
         """
+        # 增量运动不能为0
+        if target_position == 0:
+            return
+        
         if axis == 'X':
             command = f'CJXCGX{target_position}F{speed}$'
             query_command = 'CJXBX'
@@ -191,8 +196,8 @@ class MoveControl:
                 position = self.f_hexToSignedInt(data.hex())
                 if (position - position_last) == target_position * 1000:
                     print(f"{axis}轴运动到目标位置 {target_position}")
-                break
-        time.sleep(0.1)
+                    break
+            time.sleep(0.1)
 
     def get_all_velocities(self):
         X = self.get_axis_position('X')
@@ -200,7 +205,6 @@ class MoveControl:
         Z = self.get_axis_position('Z')
         C = self.get_axis_position('C')
         position = [X, Y, Z, C]
-        print("position: ", position)
         last_position = copy.deepcopy(position)
         last_time = time.time()
         time.sleep(0.1)
@@ -213,7 +217,6 @@ class MoveControl:
         cur_time = time.time()
         velocity = (np.array(cur_position) - np.array(last_position)) / (cur_time - last_time)
         self.velocity = velocity.tolist()
-        # print("velocity: ", self.velocity[0])
         return self.velocity
     
     def is_moving(self):
