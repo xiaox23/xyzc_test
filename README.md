@@ -1,16 +1,18 @@
 # xyzc_test
 
+## 注意
+一定要明确是哪个串口，ttyUSB0/1
 ```
 # 检查USB的权限
 ls -l /dev/ttyUSB*
-crw-rw---- 1 root dialout 188, 1 3月  26 14:07 /dev/ttyUSB1
+crw-rw---- 1 root dialout 188, 1 3月  26 14:07 /dev/ttyUSB0
 
 # 给USB权限
-sudo chmod 777 /dev/ttyUSB1
+sudo chmod 777 /dev/ttyUSB0
 
 # 再次检查USB权限
 ls -l /dev/ttyUSB*
-crwxrwxrwx 1 root dialout 188, 1 3月  26 14:07 /dev/ttyUSB1
+crwxrwxrwx 1 root dialout 188, 1 3月  26 14:07 /dev/ttyUSB0
 ```
 
 ## absolute_move.py

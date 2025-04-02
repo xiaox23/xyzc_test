@@ -4,7 +4,7 @@ import control
 
 if __name__ == "__main__":
     # 初始化运动控制实例
-    controller = control.MoveControl(port='/dev/ttyUSB1', baudrate=115200)
+    controller = control.MoveControl(port='/dev/ttyUSB0', baudrate=115200)
     case = input("是否第一次回零: 1/2 ?: ")
     if case == '1':
 
